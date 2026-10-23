@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Pixel Memories - เซอร์ไพรส์สำหรับคนพิเศษ 💕</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pixel Font 'Press Start 2P' & Thai Font 'Mali' / 'Prompt' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Press+Start+2P&family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pixel-pink: #ff8fa3;
+            --pixel-dark-pink: #ff4d6d;
+            --pixel-purple: #c77dff;
+            --pixel-bg: #1a0933;
+            --pixel-card-bg: #2d124d;
+            --pixel-yellow: #ffb703;
+            --pixel-border: #f72585;
+        }
+
+        body {
+            font-family: 'Prompt', 'Mali', sans-serif;
+            background-color: var(--pixel-bg);
+            color: #ffffff;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .font-pixel {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* Pixel Box Effect */
+        .pixel-box {
+            position: relative;
+            background-color: #2b0938;
+            border: 4px solid #f72585;
+            box-shadow: 
+                -4px 0 0 0 #f72585,
+                4px 0 0 0 #f72585,
+                0 -4px 0 0 #f72585,
+                0 4px 0 0 #f72585,
+                0 6px 0 0 rgba(0,0,0,0.5),
+                6px 0 0 0 rgba(0,0,0,0.5);
+        }
+
+        .pixel-btn {
+            position: relative;
+            background-color: #ff4d6d;
+            border: none;
+            color: white;
+            box-shadow: 
+                inset -4px -4px 0px 0px #b7094c,
+                inset 4px 4px 0px 0px #ff8fa3,
+                0px 5px 0px 0px #800f2f;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+
+        .pixel-btn:hover {
+            background-color: #ff758f;
+            transform: translateY(2px);
+            box-shadow: 
+                inset -4px -4px 0px 0px #b7094c,
+                inset 4px 4px 0px 0px #ff8fa3,
+                0px 3px 0px 0px #800f2f;
+        }
+
+        .pixel-btn:active {
+            transform: translateY(5px);
+            box-shadow: 
+                inset -4px -4px 0px 0px #b7094c,
+                inset 4px 4px 0px 0px #ff8fa3,
+                0px 0px 0px 0px #800f2f;
+        }
+
+        .pixel-btn-yellow {
+            background-color: #ffb703;
+            color: #2b0938;
+            box-shadow: 
+                inset -4px -4px 0px 0px #fb8500,
+                inset 4px 4px 0px 0px #ffe5ec,
+                0px 5px 0px 0px #d45100;
+        }
+
+        .pixel-btn-yellow:hover {
+            background-color: #ffc300;
+            box-shadow: 
+                inset -4px -4px 0px 0px #fb8500,
+                inset 4px 4px 0px 0px #ffe5ec,
+                0px 3px 0px 0px #d45100;
+        }
+
+        .pixel-btn-green {
+            background-color: #38b000;
+            color: #ffffff;
+            box-shadow: 
+                inset -4px -4px 0px 0px #007200,
+                inset 4px 4px 0px 0px #70e000,
+                0px 5px 0px 0px #004b00;
+        }
+
+        /* CRT Filter */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.03),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 0, 255, 0.03)
+            );
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 90;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Floating Hearts Animation */
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .floating-heart {
+            position: fixed;
+            color: #ff4d6d;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp linear infinite;
+            z-index: 0;
+        }
+
+        /* Game Canvas */
+        #gameCanvas {
+            background-color: #120326;
+            border: 4px solid #ff4d6d;
+            image-rendering: pixelated;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a0933;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f72585;
+        }
+
+        @keyframes pixelBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        .blink {
+            animation: pixelBlink 1s infinite;
+        }
+
+        /* Custom Pixel Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: #2b0938;
+            border: 2px solid #ff4d6d;
+            height: 12px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ffb703;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 sm:p-5 relative overflow-y-auto">
+
+    <!-- CRT Overlay -->
+    <div id="crtFilter" class="crt-overlay"></div>
+
+    <!-- Background Hearts -->
+    <div id="heartsContainer"></div>
+
+    <!-- Header Navigation -->
+    <header class="w-full max-w-4xl flex flex-wrap justify-between items-center z-10 py-3 px-4 mb-4 bg-purple-950/80 border-2 border-pink-500 rounded-lg backdrop-blur-sm gap-2">
+        <div class="flex items-center space-x-2">
+            <span class="text-pink-400 font-pixel text-[10px] sm:text-xs">PIXEL LOVE STUDIO v2.0</span>
+            <span class="inline-block w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+            <!-- CRT Toggle Button -->
+            <button onclick="toggleCRT()" class="pixel-btn px-2.5 py-1.5 text-[10px] font-pixel text-yellow-300">
+                📺 CRT
+            </button>
+            <!-- Audio Toggle Button -->
+            <button id="musicBtn" onclick="toggleMusic()" class="pixel-btn px-3 py-1.5 text-[10px] flex items-center space-x-1.5 font-pixel">
+                <span id="musicIcon">🔇</span>
+                <span id="musicText">MUSIC OFF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Section -->
+    <main class="w-full max-w-4xl z-10 flex-grow flex items-center justify-center relative">
+
+        <!-- ================= SCREEN 1: WELCOME SCREEN ================= -->
+        <section id="screen1" class="w-full text-center py-6 px-2 flex flex-col items-center justify-center">
+            <div class="pixel-box p-6 md:p-10 w-full max-w-xl bg-purple-900/90 mb-6">
+                <div class="text-pink-400 font-pixel text-[10px] md:text-xs mb-3 tracking-widest uppercase">Special Quest For My Beloved</div>
+                <h1 class="text-2xl md:text-4xl font-bold mb-4 text-yellow-300 drop-shadow-[0_4px_0_rgba(255,77,109,1)]">
+                    PRESS START TO OUR STORY 💕
+                </h1>
+
+                <!-- Retro Animated Pixel Heart -->
+                <div class="my-4 inline-block animate-bounce">
+                    <svg class="w-16 h-16 md:w-20 md:h-20 text-red-500 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+
+                <p class="text-pink-200 text-sm md:text-base mb-6 font-medium">
+                    ยินดีต้อนรับสู่โลกพิกเซลแห่งความทรงจำ... พร้อมย้อนความหลังและสัมผัสเรื่องราวของเราหรือยัง?
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <button onclick="goToScreen(2)" class="pixel-btn pixel-btn-yellow px-6 py-3.5 text-xs font-pixel tracking-wider uppercase w-full sm:w-auto">
+                        ▶ START GAME ◀
+                    </button>
+                    <button onclick="openCustomizerModal()" class="pixel-btn px-5 py-3.5 text-xs font-pixel tracking-wider uppercase w-full sm:w-auto bg-pink-600">
+                        ⚙️ อัปโหลดรูปแฟน/แก้ไขข้อมูล
+                    </button>
+                </div>
+            </div>
+            
+            <p class="text-[10px] text-purple-300 font-pixel blink">▼ PRESS START OR CUSTOMIZE TO BEGIN ▼</p>
+        </section>
+
+
+        <!-- ================= SCREEN 2: MEMORY LANE SCRAPBOOK ================= -->
+        <section id="screen2" class="w-full hidden flex-col items-center py-4">
+            <div class="text-center mb-6 w-full flex flex-col items-center">
+                <span class="font-pixel text-[10px] sm:text-xs text-yellow-300 bg-pink-900/80 px-3 py-1 border border-pink-400">LEVEL 1: MEMORY LANE</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-pink-300 mt-2">สมุดบันทึกความทรงจำพิกเซล 📸</h2>
+                <p class="text-xs text-purple-200 mt-1">เรื่องราวสุดประทับใจของเราสองคน</p>
+                
+                <button onclick="openCustomizerModal()" class="pixel-btn pixel-btn-yellow text-[10px] font-pixel px-3 py-1.5 mt-3">
+                    ✏️ เปลี่ยนรูป/แก้ไขข้อความตรงนี้
+                </button>
+            </div>
+
+            <!-- Polaroid Style Memory Cards Grid -->
+            <div id="memoryCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full mb-8">
+                <!-- Memory Cards generated via JS -->
+            </div>
+
+            <!-- Navigation Button -->
+            <button onclick="goToScreen(3)" class="pixel-btn px-8 py-4 text-xs font-pixel text-white uppercase tracking-wider">
+                NEXT LEVEL: HEART COLLECTOR ▶
+            </button>
+        </section>
+
+
+        <!-- ================= SCREEN 3: MINI PIXEL GAME ================= -->
+        <section id="screen3" class="w-full hidden flex-col items-center py-4">
+            <div class="text-center mb-4">
+                <span class="font-pixel text-[10px] sm:text-xs text-yellow-300 bg-pink-900/80 px-3 py-1 border border-pink-400">LEVEL 2: CATCH THE HEARTS</span>
+                <h2 class="text-2xl font-bold text-pink-300 mt-2">สะสมหัวใจแห่งความรัก 💖</h2>
+                <p class="text-xs text-purple-200">เก็บหัวใจให้ครบ 10 ดวง เพื่อเปิดอ่านจดหมายลับ!</p>
+            </div>
+
+            <div class="w-full max-w-md flex justify-between items-center mb-2 px-2 font-pixel text-xs">
+                <div class="text-yellow-300">SCORE: <span id="gameScore">0</span>/10</div>
+                <div class="text-pink-400">GOAL: 10 HEARTS</div>
+            </div>
+
+            <!-- Canvas Game -->
+            <div class="relative w-full max-w-md flex justify-center">
+                <canvas id="gameCanvas" width="360" height="400" class="w-full rounded-none"></canvas>
+                
+                <div id="gameWinOverlay" class="absolute inset-0 bg-purple-950/90 backdrop-blur-sm hidden flex-col items-center justify-center p-6 text-center">
+                    <span class="text-yellow-300 font-pixel text-base mb-2">QUEST COMPLETED! 🎉</span>
+                    <p class="text-pink-200 text-sm mb-6">คุณได้รับความรักครบถ้วนแล้ว! พร้อมเปิดความลับขั้นสุดยอดหรือยัง?</p>
+                    <button onclick="goToScreen(4)" class="pixel-btn pixel-btn-yellow px-6 py-3 font-pixel text-xs uppercase">
+                        UNLOCK SECRET LETTER ✉️
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Controls -->
+            <div class="flex justify-between w-full max-w-md mt-4 px-2 sm:hidden">
+                <button id="btnLeft" class="pixel-btn px-6 py-3 text-sm font-bold">◄ LEFT</button>
+                <button id="btnRight" class="pixel-btn px-6 py-3 text-sm font-bold">RIGHT ►</button>
+            </div>
+            
+            <p class="text-[10px] text-purple-300 font-pixel mt-3 hidden sm:block">USE LEFT / RIGHT ARROW KEYS TO MOVE</p>
+        </section>
+
+
+        <!-- ================= SCREEN 4: SECRET SURPRISE LETTER & COUPONS ================= -->
+        <section id="screen4" class="w-full hidden flex-col items-center py-4">
+            <div class="text-center mb-6">
+                <span class="font-pixel text-[10px] sm:text-xs text-yellow-300 bg-pink-900/80 px-3 py-1 border border-pink-400">FINAL CHAPTER</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-pink-300 mt-2">ข้อความสุดพิเศษถึงเธอ 💌</h2>
+            </div>
+
+            <!-- Envelope Container -->
+            <div id="envelopeContainer" class="pixel-box w-full max-w-xl p-5 bg-purple-900/90 rounded-none mb-8 text-center cursor-pointer transition-transform hover:scale-102" onclick="openEnvelope()">
+                <div id="envelopeCover" class="py-12 flex flex-col items-center justify-center">
+                    <div class="text-6xl mb-4 animate-bounce">💌</div>
+                    <span class="font-pixel text-xs text-yellow-300 bg-pink-950 px-4 py-2 border border-pink-500">
+                        [ CLICK TO OPEN LETTER ]
+                    </span>
+                    <p class="text-xs text-pink-200 mt-3">แตะที่จดหมายเพื่อเปิดอ่านความในใจ</p>
+                </div>
+
+                <div id="letterContent" class="hidden text-left bg-purple-950/95 p-5 md:p-7 border-2 border-pink-400 font-medium">
+                    <div class="flex justify-between items-center mb-4 border-b border-pink-800 pb-2">
+                        <span id="letterToLabel" class="font-pixel text-[10px] text-pink-400">TO: คนพิเศษของฉัน ❤️</span>
+                        <span class="font-pixel text-[10px] text-yellow-400">DATE: FOREVER</span>
+                    </div>
+
+                    <div id="typedText" class="text-pink-100 text-sm md:text-base leading-relaxed mb-6 min-h-[140px] whitespace-pre-line"></div>
+
+                    <div id="letterSignLabel" class="text-right font-bold text-pink-300 italic border-t border-pink-800 pt-3">
+                        รักเธอที่สุดในโลกเลยนะ 💕
+                    </div>
+                </div>
+            </div>
+
+            <!-- Love Coupons Section -->
+            <div id="couponsSection" class="w-full max-w-xl mb-8 hidden">
+                <h3 class="font-pixel text-xs text-yellow-300 mb-4 text-center">🎟️ SPECIAL LOVE COUPONS (คูปองเอาใจแฟน)</h3>
+                <div id="couponsList" class="space-y-4">
+                    <!-- Coupons rendered via JS -->
+                </div>
+            </div>
+
+            <!-- Final Actions -->
+            <div id="actionButtons" class="hidden flex-col items-center space-y-4">
+                <button onclick="triggerConfetti()" class="pixel-btn pixel-btn-yellow px-8 py-4 text-xs font-pixel uppercase tracking-wider">
+                    🎆 CELEBRATE OUR LOVE 🎆
+                </button>
+                <button onclick="goToScreen(1)" class="text-xs text-pink-300 hover:text-white underline font-pixel">
+                    🔄 PLAY AGAIN FROM START
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Customizer Modal (File Upload / Live Pixelation / Memory Editor) -->
+    <div id="customizerModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-3 overflow-y-auto">
+        <div class="pixel-box bg-purple-900 max-w-2xl w-full p-4 sm:p-6 text-left max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-pink-500 pb-3 mb-4">
+                <h3 class="font-pixel text-xs sm:text-sm text-yellow-300">⚙️ PHOTO MANAGER & CUSTOMIZER</h3>
+                <button onclick="closeCustomizerModal()" class="text-pink-400 hover:text-white font-bold text-lg">✕</button>
+            </div>
+
+            <p class="text-xs text-pink-200 mb-4">
+                อัปโหลดรูปแฟนของคุณ ระบบจะทำการ **แปลงเป็นภาพ Pixel Art** โดยอัตโนมัติ (ปรับระดับความพิกเซลได้ real-time!)
+            </p>
+
+            <!-- Memory Slots Upload Editor -->
+            <div class="space-y-6">
+                <div id="memoryEditorSlots" class="space-y-4">
+                    <!-- Slots dynamic render -->
+                </div>
+
+                <!-- Secret Letter Editor -->
+                <div class="pixel-box p-3 bg-purple-950 border-pink-400">
+                    <h4 class="font-pixel text-[10px] text-yellow-300 mb-2">✉️ แก้ไขเนื้อหาจดหมายรัก</h4>
+                    <textarea id="customLetterInput" rows="4" class="w-full bg-purple-900 border border-pink-500 text-xs p-2 text-pink-100 rounded-none focus:outline-none" placeholder="เขียนความในใจของคุณที่นี่..."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="closeCustomizerModal()" class="pixel-btn pixel-btn-yellow px-5 py-2.5 text-xs font-pixel">
+                    SAVE & CLOSE 💾
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div id="pixelModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
+        <div class="pixel-box bg-purple-900 p-6 max-w-xs w-full text-center">
+            <h3 id="modalTitle" class="font-pixel text-xs text-yellow-300 mb-2">SUCCESS</h3>
+            <p id="modalMessage" class="text-sm text-pink-100 mb-6">ดำเนินการเรียบร้อย!</p>
+            <button onclick="closeModal()" class="pixel-btn px-6 py-2 text-xs font-pixel">OK</button>
+        </div>
+    </div>
+
+    <canvas id="fireworksCanvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
+
+    <footer class="w-full text-center py-4 z-10 text-[10px] text-purple-300 font-pixel">
+        MADE WITH ❤️ FOR MY SPECIAL ONE
+    </footer>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        /* ----------------------------------------------------
+           1. Initial State & Data Store
+        ---------------------------------------------------- */
+        let memoryData = [
+            {
+                id: 1,
+                title: "เดทแรกของเรา ☕",
+                date: "FIRST DATE",
+                desc: "จำวันแรกที่เราเจอกันได้ไหม? ตื่นเต้นจนทำแก้วน้ำเกือบหก แต่เป็นวันที่ยิ้มกว้างที่สุดเลย",
+                imgSrc: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80",
+                pixelatedSrc: null,
+                pixelFactor: 8
+            },
+            {
+                id: 2,
+                title: "ดูหนังด้วยกันครั้งแรก 🎬",
+                date: "MOVIE NIGHT",
+                desc: "หนังเรื่องอะไรแทบไม่ได้จำ เพราะมัวแต่มองคนข้างๆ กับแย่งป๊อบคอร์นกินกัน",
+                imgSrc: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80",
+                pixelatedSrc: null,
+                pixelFactor: 8
+            },
+            {
+                id: 3,
+                title: "ทริปเที่ยวสุดพิเศษ 🏖️",
+                date: "VACATION",
+                desc: "การได้เดินทางไปด้วยกันคือช่วงเวลาที่ดีที่สุด อยากไปเที่ยวกับเธออีกหลายๆ ที่เลยนะ",
+                imgSrc: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+                pixelatedSrc: null,
+                pixelFactor: 8
+            },
+            {
+                id: 4,
+                title: "รอยยิ้มโปรดของฉัน 😊",
+                date: "MY FAVORITE",
+                desc: "ไม่ว่าจะเหนื่อยแค่ไหน พอเห็นรอยยิ้มของเธอก็ตื่นตัวและมีพลังขึ้นมาทันทีเลย!",
+                imgSrc: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+                pixelatedSrc: null,
+                pixelFactor: 8
+            }
+        ];
+
+        let loveLetterContent = `ถึงคนพิเศษของฉัน... ❤️\n\nขอบคุณสำหรับทุกๆ วันที่เราได้อยู่ด้วยกันนะ ไม่ว่าวันเวลาจะผ่านไปนานแค่ไหน เธอคือความสุขและเป็นรอยยิ้มที่ดีที่สุดของฉันเสมอ\n\nเว็บนี้สร้างขึ้นมาเพื่อขอบคุณและบอกให้เธอรู้ว่า เธอมีค่าสำหรับฉันมากขนาดไหน อยู่เป็นความสุขให้กันและกันแบบนี้ไปนานๆ นะครับ! 💕✨`;
+
+        let couponsData = [
+            { id: 1, title: "คูปองกอดฟรี 30 วินาที 🫂", desc: "ใช้ได้ไม่จำกัดจำนวนครั้ง เติมพลังใจได้เสมอ", claimed: false },
+            { id: 2, title: "คูปองตามใจ 1 วันเต็ม 👑", desc: "พาไปกินของอร่อย หรือทำอะไรก็ได้ตามใจเธอเลย!", claimed: false },
+            { id: 3, title: "คูปองห้ามงอน 1 วัน 💖", desc: "ใช้การันตีการยกโทษให้ทันที 1 ครั้งแบบไม่มีเงื่อนไข", claimed: false },
+            { id: 4, title: "คูปองชาไข่มุก 1 แก้ว 🧋", desc: "เลือกรสชาติและท็อปปิ้งได้ตามใจชอบ เดี๋ยวเลี้ยงเอง!", claimed: false }
+        ];
+
+        /* ----------------------------------------------------
+           2. Audio Synthesizer (Chiptune)
+        ---------------------------------------------------- */
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let musicInterval = null;
+
+        const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25];
+        const melody = [
+            { note: 4, dur: 200 }, { note: 7, dur: 200 }, { note: 9, dur: 200 }, { note: 7, dur: 400 },
+            { note: 4, dur: 200 }, { note: 2, dur: 200 }, { note: 4, dur: 400 },
+            { note: 7, dur: 200 }, { note: 9, dur: 200 }, { note: 7, dur: 400 }
+        ];
+        let noteIdx = 0;
+
+        function play8BitTone(freq, duration) {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration / 1000);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration / 1000);
+            } catch (e) {}
+        }
+
+        function toggleMusic() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            if (isMusicPlaying) {
+                clearInterval(musicInterval);
+                isMusicPlaying = false;
+                document.getElementById('musicIcon').textContent = "🔇";
+                document.getElementById('musicText').textContent = "MUSIC OFF";
+            } else {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                isMusicPlaying = true;
+                document.getElementById('musicIcon').textContent = "🔊";
+                document.getElementById('musicText').textContent = "MUSIC ON";
+
+                noteIdx = 0;
+                musicInterval = setInterval(() => {
+                    const item = melody[noteIdx];
+                    play8BitTone(notes[item.note], item.dur);
+                    noteIdx = (noteIdx + 1) % melody.length;
+                }, 320);
+            }
+        }
+
+        function toggleCRT() {
+            const crt = document.getElementById('crtFilter');
+            crt.style.opacity = crt.style.opacity === '0' ? '0.7' : '0';
+        }
+
+        /* ----------------------------------------------------
+           3. Real-Time Canvas Image Pixelation Processing
+        ---------------------------------------------------- */
+        function pixelateImage(imgElement, pixelFactor, callback) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = () => {
+                const w = img.width;
+                const h = img.height;
+
+                // Scale down based on pixelFactor
+                const scaledW = Math.max(1, Math.floor(w / pixelFactor));
+                const scaledH = Math.max(1, Math.floor(h / pixelFactor));
+
+                canvas.width = scaledW;
+                canvas.height = scaledH;
+
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(img, 0, 0, scaledW, scaledH);
+
+                // Scale back up to original size
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = w;
+                finalCanvas.height = h;
+                const finalCtx = finalCanvas.getContext('2d');
+
+                finalCtx.imageSmoothingEnabled = false;
+                finalCtx.drawImage(canvas, 0, 0, scaledW, scaledH, 0, 0, w, h);
+
+                callback(finalCanvas.toDataURL('image/jpeg', 0.85));
+            };
+            img.src = imgElement;
+        }
+
+        /* ----------------------------------------------------
+           4. Render Memory Cards & Customizer UI
+        ---------------------------------------------------- */
+        function renderMemoryCards() {
+            const grid = document.getElementById('memoryCardsGrid');
+            grid.innerHTML = '';
+
+            memoryData.forEach((mem) => {
+                const card = document.createElement('div');
+                card.className = "pixel-box p-3.5 bg-purple-950/90 rounded-none hover:scale-[1.02] transition-transform duration-200";
+
+                const imgSrc = mem.pixelatedSrc || mem.imgSrc;
+
+                card.innerHTML = `
+                    <div class="bg-white p-3 text-gray-800 shadow-md">
+                        <div class="relative bg-gray-900 aspect-video mb-3 overflow-hidden border-2 border-gray-800 flex items-center justify-center">
+                            <img src="${imgSrc}" alt="${mem.title}" class="w-full h-full object-cover filter contrast-110">
+                            <span class="absolute top-2 right-2 bg-yellow-400 text-black font-pixel text-[8px] px-2 py-0.5 border border-black">${mem.date}</span>
+                        </div>
+                        <h3 class="font-bold text-base text-pink-600 mb-1">${mem.title}</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">${mem.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCustomizerModal() {
+            const container = document.getElementById('memoryEditorSlots');
+            container.innerHTML = '';
+
+            memoryData.forEach((mem, index) => {
+                const slot = document.createElement('div');
+                slot.className = "pixel-box p-3 bg-purple-950 border-pink-500 flex flex-col gap-3";
+
+                slot.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-pink-800 pb-1">
+                        <span class="font-pixel text-[10px] text-yellow-300">MEMORY SLOT #${index + 1}</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+                        <div class="relative aspect-video bg-gray-900 border border-pink-400 overflow-hidden">
+                            <img id="modalPreview_${mem.id}" src="${mem.pixelatedSrc || mem.imgSrc}" class="w-full h-full object-cover">
+                        </div>
+
+                        <div class="sm:col-span-2 space-y-2">
+                            <input type="file" accept="image/*" onchange="handleFileUpload(event, ${mem.id})" class="text-[10px] text-pink-200 file:mr-2 file:py-1 file:px-2 file:border-0 file:text-[10px] file:font-pixel file:bg-pink-600 file:text-white hover:file:bg-pink-500">
+                            
+                            <div>
+                                <label class="text-[10px] font-pixel text-pink-300 block mb-1">PIXEL LEVEL: <span id="pixelValLabel_${mem.id}">${mem.pixelFactor}</span>x</label>
+                                <input type="range" min="1" max="24" value="${mem.pixelFactor}" oninput="updatePixelation(${mem.id}, this.value)" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <input type="text" value="${mem.title}" onchange="updateMemoryText(${mem.id}, 'title', this.value)" class="w-full bg-purple-900 border border-pink-500 p-1.5 text-pink-100 rounded-none focus:outline-none" placeholder="หัวข้อความทรงจำ">
+                        <textarea onchange="updateMemoryText(${mem.id}, 'desc', this.value)" rows="2" class="w-full bg-purple-900 border border-pink-500 p-1.5 text-pink-100 rounded-none focus:outline-none" placeholder="รายละเอียดความทรงจำ">${mem.desc}</textarea>
+                    </div>
+                `;
+                container.appendChild(slot);
+            });
+
+            document.getElementById('customLetterInput').value = loveLetterContent;
+        }
+
+        function handleFileUpload(event, id) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const item = memoryData.find(m => m.id === id);
+                item.imgSrc = e.target.result;
+
+                pixelateImage(item.imgSrc, item.pixelFactor, (pixelData) => {
+                    item.pixelatedSrc = pixelData;
+                    const preview = document.getElementById(`modalPreview_${id}`);
+                    if (preview) preview.src = pixelData;
+                    renderMemoryCards();
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updatePixelation(id, factor) {
+            const item = memoryData.find(m => m.id === id);
+            item.pixelFactor = parseInt(factor);
+            document.getElementById(`pixelValLabel_${id}`).textContent = factor;
+
+            if (factor == 1) {
+                item.pixelatedSrc = item.imgSrc;
+                const preview = document.getElementById(`modalPreview_${id}`);
+                if (preview) preview.src = item.imgSrc;
+                renderMemoryCards();
+            } else {
+                pixelateImage(item.imgSrc, item.pixelFactor, (pixelData) => {
+                    item.pixelatedSrc = pixelData;
+                    const preview = document.getElementById(`modalPreview_${id}`);
+                    if (preview) preview.src = pixelData;
+                    renderMemoryCards();
+                });
+            }
+        }
+
+        function updateMemoryText(id, field, value) {
+            const item = memoryData.find(m => m.id === id);
+            if (item) {
+                item[field] = value;
+                renderMemoryCards();
+            }
+        }
+
+        function openCustomizerModal() {
+            renderCustomizerModal();
+            document.getElementById('customizerModal').classList.remove('hidden');
+        }
+
+        function closeCustomizerModal() {
+            loveLetterContent = document.getElementById('customLetterInput').value;
+            document.getElementById('customizerModal').classList.add('hidden');
+            renderMemoryCards();
+        }
+
+        /* ----------------------------------------------------
+           5. Screen Navigation
+        ---------------------------------------------------- */
+        function goToScreen(screenNumber) {
+            if (audioCtx && isMusicPlaying) play8BitTone(523.25, 80);
+
+            for (let i = 1; i <= 4; i++) {
+                const scr = document.getElementById(`screen${i}`);
+                if (scr) scr.classList.add('hidden');
+            }
+            
+            const currentScreen = document.getElementById(`screen${screenNumber}`);
+            if (currentScreen) {
+                currentScreen.classList.remove('hidden');
+                currentScreen.classList.add('flex');
+            }
+
+            if (screenNumber === 3) initGame();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ----------------------------------------------------
+           6. Mini Game Engine
+        ---------------------------------------------------- */
+        let canvas, ctx;
+        let basket = { x: 150, y: 360, width: 60, height: 20, speed: 7 };
+        let hearts = [];
+        let score = 0;
+        let gameLoopId = null;
+        let leftPressed = false, rightPressed = false;
+
+        function initGame() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            score = 0;
+            document.getElementById('gameScore').textContent = score;
+            document.getElementById('gameWinOverlay').classList.add('hidden');
+
+            hearts = [];
+            basket.x = canvas.width / 2 - basket.width / 2;
+
+            window.onkeydown = (e) => {
+                if (e.key === "ArrowLeft") leftPressed = true;
+                if (e.key === "ArrowRight") rightPressed = true;
+            };
+            window.onkeyup = (e) => {
+                if (e.key === "ArrowLeft") leftPressed = false;
+                if (e.key === "ArrowRight") rightPressed = false;
+            };
+
+            const btnLeft = document.getElementById('btnLeft');
+            const btnRight = document.getElementById('btnRight');
+            
+            btnLeft.ontouchstart = (e) => { e.preventDefault(); leftPressed = true; };
+            btnLeft.ontouchend = (e) => { e.preventDefault(); leftPressed = false; };
+            btnRight.ontouchstart = (e) => { e.preventDefault(); rightPressed = true; };
+            btnRight.ontouchend = (e) => { e.preventDefault(); rightPressed = false; };
+
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            updateGame();
+        }
+
+        function updateGame() {
+            ctx.fillStyle = '#120326';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (leftPressed && basket.x > 0) basket.x -= basket.speed;
+            if (rightPressed && basket.x < canvas.width - basket.width) basket.x += basket.speed;
+
+            // Basket
+            ctx.fillStyle = '#ffb703';
+            ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+            ctx.fillStyle = '#fb8500';
+            ctx.fillRect(basket.x + 4, basket.y + 4, basket.width - 8, basket.height - 8);
+
+            // Spawn hearts
+            if (Math.random() < 0.035 && hearts.length < 5) {
+                hearts.push({
+                    x: Math.random() * (canvas.width - 20),
+                    y: -20,
+                    size: 16,
+                    speed: 2 + Math.random() * 2
+                });
+            }
+
+            for (let i = hearts.length - 1; i >= 0; i--) {
+                let h = hearts[i];
+                h.y += h.speed;
+
+                ctx.fillStyle = '#ff4d6d';
+                ctx.fillRect(h.x + 4, h.y, 8, 4);
+                ctx.fillRect(h.x + 14, h.y, 8, 4);
+                ctx.fillRect(h.x, h.y + 4, 26, 8);
+                ctx.fillRect(h.x + 4, h.y + 12, 18, 4);
+                ctx.fillRect(h.x + 8, h.y + 16, 10, 4);
+
+                if (
+                    h.y + h.size >= basket.y &&
+                    h.x + h.size >= basket.x &&
+                    h.x <= basket.x + basket.width
+                ) {
+                    hearts.splice(i, 1);
+                    score++;
+                    document.getElementById('gameScore').textContent = score;
+
+                    if (isMusicPlaying) play8BitTone(659.25, 80);
+
+                    if (score >= 10) {
+                        showGameWin();
+                        return;
+                    }
+                } else if (h.y > canvas.height) {
+                    hearts.splice(i, 1);
+                }
+            }
+
+            gameLoopId = requestAnimationFrame(updateGame);
+        }
+
+        function showGameWin() {
+            cancelAnimationFrame(gameLoopId);
+            const overlay = document.getElementById('gameWinOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            triggerConfetti();
+        }
+
+        /* ----------------------------------------------------
+           7. Typewriter Letter & Coupons
+        ---------------------------------------------------- */
+        let typeIdx = 0;
+        let isEnvelopeOpen = false;
+
+        function openEnvelope() {
+            if (isEnvelopeOpen) return;
+            isEnvelopeOpen = true;
+
+            document.getElementById('envelopeCover').classList.add('hidden');
+            document.getElementById('letterContent').classList.remove('hidden');
+
+            typeWriterEffect();
+        }
+
+        function typeWriterEffect() {
+            if (typeIdx < loveLetterContent.length) {
+                const char = loveLetterContent.charAt(typeIdx);
+                const typedElem = document.getElementById('typedText');
+                
+                typedElem.textContent += char;
+                typeIdx++;
+                
+                if (isMusicPlaying && typeIdx % 4 === 0) play8BitTone(440, 25);
+                setTimeout(typeWriterEffect, 40);
+            } else {
+                renderCoupons();
+                document.getElementById('couponsSection').classList.remove('hidden');
+                document.getElementById('actionButtons').classList.remove('hidden');
+                document.getElementById('actionButtons').classList.add('flex');
+            }
+        }
+
+        function renderCoupons() {
+            const list = document.getElementById('couponsList');
+            list.innerHTML = '';
+
+            couponsData.forEach((coupon) => {
+                const item = document.createElement('div');
+                item.className = "pixel-box p-3 bg-pink-950/90 border-pink-400 flex justify-between items-center gap-2";
+                
+                item.innerHTML = `
+                    <div>
+                        <span class="font-pixel text-[9px] text-yellow-300 block mb-0.5">LOVE COUPON</span>
+                        <h4 class="font-bold text-pink-200 text-xs sm:text-sm">${coupon.title}</h4>
+                        <p class="text-[10px] text-pink-300">${coupon.desc}</p>
+                    </div>
+                    <button onclick="claimCoupon(this, ${coupon.id})" class="pixel-btn ${coupon.claimed ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : ''} px-3 py-1.5 text-[10px] font-pixel shrink-0">
+                        ${coupon.claimed ? 'USED' : 'REDEEM'}
+                    </button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function claimCoupon(btn, id) {
+            const coupon = couponsData.find(c => c.id === id);
+            if (!coupon || coupon.claimed) return;
+
+            coupon.claimed = true;
+            btn.textContent = "USED";
+            btn.classList.add('bg-gray-600', 'text-gray-400', 'cursor-not-allowed');
+
+            showModal("🎉 ใช้คูปองสำเร็จ!", `เธอได้ใช้ "${coupon.title}" เรียบร้อยแล้ว! เตรียมรอรับสิทธิ์ได้เล้ยยย 💕`);
+            triggerConfetti();
+        }
+
+        function showModal(title, msg) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = msg;
+            document.getElementById('pixelModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('pixelModal').classList.add('hidden');
+        }
+
+        /* ----------------------------------------------------
+           8. Background Floating Hearts & Fireworks
+        ---------------------------------------------------- */
+        function createFloatingHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heartSymbols = ['♥', '💖', '💕', '💗'];
+            for (let i = 0; i < 12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart font-pixel';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${4 + Math.random() * 5}s`;
+                heart.style.animationDelay = `${Math.random() * 4}s`;
+                heart.style.fontSize = `${12 + Math.random() * 14}px`;
+                container.appendChild(heart);
+            }
+        }
+
+        const fwCanvas = document.getElementById('fireworksCanvas');
+        const fwCtx = fwCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeFireworks() {
+            fwCanvas.width = window.innerWidth;
+            fwCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeFireworks);
+        resizeFireworks();
+
+        function triggerConfetti() {
+            if (isMusicPlaying) play8BitTone(783.99, 180);
+
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: fwCanvas.width / 2,
+                    y: fwCanvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12 - 3,
+                    color: ['#ff4d6d', '#ffb703', '#c77dff', '#4cc9f0', '#ffffff'][Math.floor(Math.random() * 5)],
+                    size: Math.random() * 6 + 4,
+                    alpha: 1,
+                    decay: Math.random() * 0.02 + 0.015
+                });
+            }
+            if (particles.length <= 70) animateFireworks();
+        }
+
+        function animateFireworks() {
+            fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15;
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                fwCtx.globalAlpha = p.alpha;
+                fwCtx.fillStyle = p.color;
+                fwCtx.fillRect(p.x, p.y, p.size, p.size);
+            }
+
+            if (particles.length > 0) requestAnimationFrame(animateFireworks);
+        }
+
+        // Initialize app
+        window.onload = () => {
+            memoryData.forEach(item => {
+                pixelateImage(item.imgSrc, item.pixelFactor, (pData) => {
+                    item.pixelatedSrc = pData;
+                    renderMemoryCards();
+                });
+            });
+            createFloatingHearts();
+        };
+    </script>
+</body>
+</html>
